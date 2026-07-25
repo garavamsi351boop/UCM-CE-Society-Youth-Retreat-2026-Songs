@@ -7,11 +7,12 @@
 }
 
 body{
+
     font-family:'Noto Sans Telugu',sans-serif;
 
     background:
     linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),
-   url("https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1600");
+    url("https://images.unsplash.com/photo-1504052434569-70ad5836ab65?w=1600");
 
     background-size:cover;
     background-position:center;
@@ -19,10 +20,12 @@ body{
     background-attachment:fixed;
 
     min-height:100vh;
+
     padding:25px;
+
 }
 
-/*================ HERO HEADER ================*/
+/* ================= HEADER ================= */
 
 header{
 
@@ -38,7 +41,7 @@ header{
 
     text-align:center;
 
-    color:rgba(255,255,255,.90);
+    color:rgba(255,255,255,.9);
 
     font-size:11px;
 
@@ -63,18 +66,21 @@ header{
     gap:30px;
 
 }
+
 .logo{
 
     width:120px;
+
     height:120px;
 
     object-fit:contain;
 
     justify-self:center;
 
-    transition:0.3s ease;
+    transition:.3s ease;
 
     filter:drop-shadow(0 0 18px rgba(255,215,0,.45));
+
 }
 
 .logo:hover{
@@ -82,7 +88,9 @@ header{
     transform:scale(1.08);
 
     filter:drop-shadow(0 0 25px rgba(255,215,0,.65));
+
 }
+
 .hero-text{
 
     text-align:center;
@@ -91,15 +99,15 @@ header{
 
 .hero-text h1{
 
-    font-size:60px;
-
-    font-weight:700;
+    font-size:64px;
 
     color:white;
 
-    margin:0;
+    font-weight:700;
 
-    letter-spacing:2px;
+    letter-spacing:3px;
+
+    text-shadow:0 0 18px rgba(255,255,255,.25);
 
 }
 
@@ -107,9 +115,9 @@ header{
 
     margin-top:8px;
 
-    font-size:24px;
-
     color:white;
+
+    font-size:24px;
 
     font-weight:400;
 
@@ -135,9 +143,9 @@ header{
 
     margin-top:15px;
 
-    font-size:28px;
-
     color:white;
+
+    font-size:28px;
 
     font-weight:500;
 
@@ -161,25 +169,239 @@ header{
 
 }
 
+/* ================= SEARCH ================= */
+
+#search{
+
+    width:100%;
+
+    max-width:800px;
+
+    display:block;
+
+    margin:30px auto;
+
+    padding:18px 28px;
+
+    border-radius:60px;
+
+    border:1px solid rgba(255,255,255,.35);
+
+    background:rgba(255,255,255,.18);
+
+    backdrop-filter:blur(18px);
+
+    -webkit-backdrop-filter:blur(18px);
+
+    color:white;
+
+    font-size:22px;
+
+    outline:none;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+
+}
+
+#search::placeholder{
+
+    color:rgba(255,255,255,.75);
+
+}
+
+#search:focus{
+
+    border-color:#FFD700;
+
+    box-shadow:0 0 25px rgba(255,215,0,.45);
+
+}
+
+/* ================= SONG LIST ================= */
+
+.song{
+
+    max-width:800px;
+
+    margin:18px auto;
+
+    padding:20px 28px;
+
+    border-radius:20px;
+
+    background:rgba(255,255,255,.12);
+
+    backdrop-filter:blur(20px);
+
+    -webkit-backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.18);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    color:white;
+
+    font-size:26px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+
+}
+
+.song:hover{
+
+    transform:translateY(-4px);
+
+    background:rgba(255,255,255,.22);
+
+    border-color:rgba(255,215,0,.45);
+
+    box-shadow:0 15px 35px rgba(0,0,0,.35);
+
+}
+
+.song-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+.song-arrow{
+
+    color:#FFD700;
+
+    font-size:28px;
+
+    transition:.3s;
+
+}
+
+.song:hover .song-arrow{
+
+    transform:translateX(8px);
+
+}
+
+/* ================= LYRICS ================= */
+
+#lyrics-box{
+
+    max-width:900px;
+
+    margin:45px auto;
+
+    padding:40px;
+
+    border-radius:24px;
+
+    background:rgba(255,255,255,.96);
+
+    backdrop-filter:blur(15px);
+
+    box-shadow:0 20px 50px rgba(0,0,0,.35);
+
+    animation:fadeIn .4s ease;
+
+}
+
+#lyrics-box h2{
+
+    text-align:center;
+
+    font-size:38px;
+
+    color:#0b5394;
+
+    margin-bottom:25px;
+
+    font-weight:700;
+
+}
+
+pre{
+
+    white-space:pre-wrap;
+
+    font-family:'Noto Sans Telugu',sans-serif;
+
+    font-size:24px;
+
+    line-height:2.1;
+
+    color:#222;
+
+}
+
+/* ================= ANIMATION ================= */
+
+@keyframes fadeIn{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(20px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0);
+
+    }
+
+}
+
+/* ================= MOBILE ================= */
+
 @media(max-width:768px){
+
+body{
+
+padding:15px;
+
+}
 
 .hero{
 
 grid-template-columns:1fr;
 
+gap:15px;
+
 }
 
 .logo{
 
-width:80px;
+width:85px;
 
-height:80px;
+height:85px;
 
 }
 
 .hero-text h1{
 
 font-size:36px;
+
+}
+
+.hero-text h2{
+
+font-size:18px;
 
 }
 
@@ -201,125 +423,46 @@ width:160px;
 
 }
 
-}
-
-
 #search{
 
-    width:100%;
-    max-width:800px;
+font-size:18px;
 
-    display:block;
-
-    margin:30px auto;
-
-    padding:18px 28px;
-
-    border:1px solid rgba(255,255,255,.35);
-
-    border-radius:60px;
-
-    background:rgba(255,255,255,.18);
-
-    backdrop-filter:blur(18px);
-
-    color:white;
-
-    font-size:22px;
-
-    outline:none;
-
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
-
-}
-
-#search::placeholder{
-
-    color:rgba(255,255,255,.75);
+padding:16px 22px;
 
 }
 
 .song{
 
-    max-width:800px;
+font-size:20px;
 
-    margin:18px auto;
-
-    padding:20px 28px;
-
-    border-radius:20px;
-
-    background:rgba(255,255,255,.12);
-
-    backdrop-filter:blur(20px);
-
-    -webkit-backdrop-filter:blur(20px);
-
-    border:1px solid rgba(255,255,255,.18);
-
-    color:white;
-
-    font-size:26px;
-
-    font-weight:600;
-
-    cursor:pointer;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    transition:all .3s ease;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.25);
+padding:18px;
 
 }
 
-.song:hover{
+.song-arrow{
 
-    transform:translateY(-4px);
-
-    background:rgba(255,255,255,.22);
-
-    box-shadow:0 15px 35px rgba(0,0,0,.35);
+font-size:22px;
 
 }
+
 #lyrics-box{
 
-    max-width:700px;
-
-    margin:35px auto;
-
-    background:white;
-
-    padding:25px;
-
-    border-radius:20px;
-
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
+padding:25px;
 
 }
 
 #lyrics-box h2{
 
-    color:#0b5394;
+font-size:28px;
 
-    text-align:center;
-
-    margin-bottom:20px;
 }
 
 pre{
 
-    white-space:pre-wrap;
+font-size:20px;
 
-    font-family:'Noto Sans Telugu',sans-serif;
+line-height:1.9;
 
-    
-    font-size:20px;
-
-    line-height:2;
 }
 
+}

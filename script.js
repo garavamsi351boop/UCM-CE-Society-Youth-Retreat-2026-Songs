@@ -1,10 +1,10 @@
 const songs = [
     {
-        title: "ఎన్నే ఆరాధింతును",
-        lyrics: `ఎన్నే ఆరాధింతును(4)
+        title: "నిన్నే ఆరాధింతును",
+        lyrics: `నిన్నే ఆరాధింతును(4)
 
 మహా మంచివాడు చాలా గొప్పవాడు
-ఎన్ను పోలిన వారెవరు(2)
+నిన్ను పోలిన వారెవరు(2)
 
 Halleluah halleluah
 
@@ -25,11 +25,11 @@ Halleluah halleluah`
     },
     {
         title: "మహిమ ఘనత",
-        lyrics: "మహిమ ఘనత నీకే చెల్లును దేవా...\n(Lyrics will be updated soon)"
+        lyrics: "మహిమ ఘనత నీకే చెల్లును దేవా...\n(Lyrics will be added later)"
     },
     {
         title: "యేసయ్యా నీవే",
-        lyrics: "యేసయ్యా నీవే నా ఆశ్రయము...\n(Lyrics will be updated soon)"
+        lyrics: "యేసయ్యా నీవే నా ఆశ్రయము...\n(Lyrics will be added later)"
     }
 ];
 
@@ -37,7 +37,7 @@ const list = document.getElementById("song-list");
 const lyricsBox = document.getElementById("lyrics-box");
 const searchInput = document.getElementById("search");
 
-// Function to display song list
+// Render songs list
 function renderSongs(songsToDisplay) {
     list.innerHTML = "";
 
@@ -61,7 +61,7 @@ function renderSongs(songsToDisplay) {
     });
 }
 
-// Display song lyrics box
+// Show lyrics above the footer
 function showLyrics(song) {
     lyricsBox.style.display = "block";
     lyricsBox.innerHTML = `
@@ -73,12 +73,12 @@ function showLyrics(song) {
     lyricsBox.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Hide lyrics box
+// Hide lyrics
 function closeLyrics() {
     lyricsBox.style.display = "none";
 }
 
-// Live search listener
+// Search filter
 searchInput.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase().trim();
     const filtered = songs.filter(song =>

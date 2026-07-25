@@ -19,7 +19,6 @@
             </div>
 
             <div class="hero-text">
-                <!-- Cross symbol removed here -->
                 <h1>UNITED CHURCH</h1>
                 <h2>Malkapuram</h2>
                 <div class="gold-divider"></div>
@@ -35,18 +34,23 @@
     </header>
 
     <main class="content">
+        <!-- Enhanced Search Bar -->
         <div class="search-container">
             <span class="search-icon">🔍</span>
-            <input type="text" id="search" placeholder="Search Songs...">
+            <input type="text" id="search" placeholder="Search by song name or number (e.g. 1, #02)...">
         </div>
 
+        <!-- Dynamic Song List -->
         <div id="song-list"></div>
 
+        <!-- Lyrics Container -->
         <div id="lyrics-box" style="display: none;"></div>
     </main>
 
+    <!-- Floating Back To Top Button -->
+    <button id="backToTop" class="back-to-top" onclick="scrollToTop()">↑</button>
+
     <footer>
-        <!-- Cross symbol removed here -->
         <p>United Church Malkapuram</p>
         <p>Christian Endeavour Society — Youth Retreat 2026</p>
         <small>Made with ❤️ for God's Glory</small>

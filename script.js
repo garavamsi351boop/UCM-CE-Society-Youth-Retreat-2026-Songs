@@ -3,8 +3,9 @@ const songs = [
         number: 1,
         title: "నిన్నే ఆరాధింతును",
         lyrics: `నిన్నే ఆరాధింతును(4)
+
 మహా మంచివాడు చాలా గొప్పవాడు
-ఎన్ను పోలిన వారెవరు(2)
+నిన్ను పోలిన వారెవరు(2)
 
 Halleluah halleluah
 
@@ -26,23 +27,34 @@ Halleluah halleluah`
     {
         number: 2,
         title: "మహిమ ఘనత",
-        lyrics: "మహిమ ఘనత నీకే చెల్లును దేవా...\n(Lyrics will be updated soon)"
+        lyrics: `మహిమ ఘనత నీకే చెల్లును దేవా...
+హల్లెలూయా హల్లెలూయా
+
+మహా మహిమతో రారాజుగా
+త్వరలోనే యేసు వచ్చును`
     },
     {
         number: 3,
         title: "యేసయ్యా నీవే",
-        lyrics: "యేసయ్యా నీవే నా ఆశ్రయము...\n(Lyrics will be updated soon)"
+        lyrics: `యేసయ్యా నీవే నా ఆశ్రయము
+నీవే నా దుర్గము దేవా
+
+నన్నెంతో ప్రేమించి కాపాడితివి
+నీకే నా స్తుతులు సమర్పింతును`
     }
 ];
 
 const list = document.getElementById("song-list");
 const lyricsBox = document.getElementById("lyrics-box");
 const searchInput = document.getElementById("search");
-const backToTopBtn = document.getElementById("backToTop");
+const presOverlay = document.getElementById("presentation-overlay");
 
+let currentSong = null;
+let presentationSlides = [];
+let currentSlideIndex = 0;
 let currentFontSize = 21;
 
-// Helper to format single digits into 2-digit strings (e.g. 1 -> "01")
+// Helper to format song numbers (e.g. 1 -> "01")
 function formatSongNumber(num) {
     return num < 10 ? `0${num}` : `${num}`;
 }
@@ -50,7 +62,6 @@ function formatSongNumber(num) {
 // Render Songs List
 function renderSongs(songsToDisplay) {
     list.innerHTML = "";
-
     if (songsToDisplay.length === 0) {
         list.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.7); font-size: 18px; margin-top: 25px;">No songs found</p>`;
         return;
@@ -58,7 +69,7 @@ function renderSongs(songsToDisplay) {
 
     songsToDisplay.forEach(song => {
         const div = document.createElement("div");
-        div.className = "song ripple";
+        div.className = "song";
         div.innerHTML = `
             <div class="song-left">
                 <span class="song-badge">#${formatSongNumber(song.number)}</span>
@@ -66,17 +77,14 @@ function renderSongs(songsToDisplay) {
             </div>
             <span class="song-arrow">❯</span>
         `;
-
-        div.onclick = (e) => {
-            createRipple(e, div);
-            showLyrics(song);
-        };
+        div.onclick = () => showLyrics(song);
         list.appendChild(div);
     });
 }
 
 // Show Lyrics Card
 function showLyrics(song) {
+    currentSong = song;
     lyricsBox.style.display = "block";
     currentFontSize = 21;
 
@@ -89,8 +97,7 @@ function showLyrics(song) {
             </div>
             
             <div class="action-buttons">
-                <button class="action-btn copy-btn" onclick="copyLyrics('${song.title}')">📋 Copy</button>
-                <button class="action-btn share-btn" onclick="shareWhatsApp('${song.title}')">💬 Share</button>
+                <button class="action-btn present-btn" onclick="startPresentation()">🖥️ Present Mode</button>
                 <button class="close-btn" onclick="closeLyrics()">✕</button>
             </div>
         </div>
@@ -111,7 +118,6 @@ function showLyrics(song) {
 function changeFontSize(delta) {
     const lyricsText = document.getElementById("lyrics-text");
     const indicator = document.getElementById("font-size-indicator");
-    
     if (lyricsText) {
         let newSize = currentFontSize + delta;
         if (newSize >= 15 && newSize <= 35) {
@@ -122,36 +128,76 @@ function changeFontSize(delta) {
     }
 }
 
-// Copy Lyrics Function
-function copyLyrics(title) {
-    const song = songs.find(s => s.title === title);
-    if (!song) return;
-
-    const textToCopy = `✝ ${song.title} (#${formatSongNumber(song.number)})\n\n${song.lyrics}\n\n— UCM CE Society Youth Retreat 2026`;
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        alert("Lyrics copied to clipboard!");
-    });
-}
-
-// Share via WhatsApp Function
-function shareWhatsApp(title) {
-    const song = songs.find(s => s.title === title);
-    if (!song) return;
-
-    const shareText = `*${song.title}* (#${formatSongNumber(song.number)})\n\n${song.lyrics}\n\n_UCM CE Society Youth Retreat 2026_`;
-    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
-    window.open(whatsappUrl, '_blank');
-}
-
-// Close Lyrics Box
 function closeLyrics() {
     lyricsBox.style.display = "none";
 }
 
-// Search Logic (Handles Song Numbers & Titles)
+/* ================= PRESENTATION LOGIC ================= */
+function startPresentation() {
+    if (!currentSong) return;
+
+    // Splits lyrics by blank lines into individual verse slides
+    presentationSlides = currentSong.lyrics
+        .split(/\n\s*\n/)
+        .map(slide => slide.trim())
+        .filter(slide => slide.length > 0);
+
+    currentSlideIndex = 0;
+    presOverlay.style.display = "flex";
+    updateSlide();
+}
+
+function exitPresentation() {
+    presOverlay.style.display = "none";
+}
+
+function updateSlide() {
+    const totalSlides = presentationSlides.length;
+    const currentVerseText = presentationSlides[currentSlideIndex];
+
+    document.getElementById("pres-content").innerHTML = `
+        <div class="pres-telugu">${currentVerseText}</div>
+    `;
+
+    document.getElementById("pres-title").textContent = currentSong.title;
+    document.getElementById("pres-counter").textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
+
+    const upNextElem = document.getElementById("pres-upnext");
+    if (currentSlideIndex < totalSlides - 1) {
+        upNextElem.textContent = `Up next: verse ${currentSlideIndex + 2}`;
+    } else {
+        upNextElem.textContent = "End of Song";
+    }
+}
+
+function nextSlide(e) {
+    if (e) e.stopPropagation();
+    if (currentSlideIndex < presentationSlides.length - 1) {
+        currentSlideIndex++;
+        updateSlide();
+    }
+}
+
+function prevSlide(e) {
+    if (e) e.stopPropagation();
+    if (currentSlideIndex > 0) {
+        currentSlideIndex--;
+        updateSlide();
+    }
+}
+
+// Keyboard controls
+document.addEventListener('keydown', (e) => {
+    if (presOverlay.style.display === "flex") {
+        if (e.key === "ArrowRight" || e.key === " ") nextSlide();
+        if (e.key === "ArrowLeft") prevSlide();
+        if (e.key === "Escape") exitPresentation();
+    }
+});
+
+// Search Filter
 searchInput.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase().trim().replace('#', '');
-    
     const filtered = songs.filter(song =>
         song.title.toLowerCase().includes(query) ||
         song.lyrics.toLowerCase().includes(query) ||
@@ -160,39 +206,6 @@ searchInput.addEventListener("input", (e) => {
     );
     renderSongs(filtered);
 });
-
-// Interactive Ripple Effect
-function createRipple(event, element) {
-    const circle = document.createElement("span");
-    const diameter = Math.max(element.clientWidth, element.clientHeight);
-    const radius = diameter / 2;
-
-    const rect = element.getBoundingClientRect();
-    circle.style.width = circle.style.height = `${diameter}px`;
-    circle.style.left = `${event.clientX - rect.left - radius}px`;
-    circle.style.top = `${event.clientY - rect.top - radius}px`;
-    circle.classList.add("ripple-effect");
-
-    const ripple = element.getElementsByClassName("ripple-effect")[0];
-    if (ripple) {
-        ripple.remove();
-    }
-
-    element.appendChild(circle);
-}
-
-// Back to Top Scroll Logic
-window.onscroll = function () {
-    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
-        backToTopBtn.style.display = "flex";
-    } else {
-        backToTopBtn.style.display = "none";
-    }
-};
-
-function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
 
 // Initial Render
 renderSongs(songs);

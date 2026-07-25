@@ -42,16 +42,25 @@ lyricsBox.id = "lyrics-box";
 document.body.appendChild(lyricsBox);
 
 songs.forEach(song => {
+
     const div = document.createElement("div");
+
     div.className = "song";
-    div.textContent = song.title;
+
+    div.innerHTML = `
+        <span class="song-title">🎵 ${song.title}</span>
+        <span class="song-arrow">❯</span>
+    `;
 
     div.onclick = () => {
+
         lyricsBox.innerHTML = `
             <h2>${song.title}</h2>
             <pre>${song.lyrics}</pre>
         `;
+
     };
 
     list.appendChild(div);
+
 });

@@ -1,10 +1,11 @@
 const songs = [
     {
-        title: "నిన్నే ఆరాధింతును",
-        lyrics: `నిన్నే ఆరాధింతును(4)
+        number: 1,
+        title: "ఎన్నే ఆరాధింతును",
+        lyrics: `ఎన్నే ఆరాధింతును(4)
 
 మహా మంచివాడు చాలా గొప్పవాడు
-నిన్ను పోలిన వారెవరు(2)
+ఎన్ను పోలిన వారెవరు(2)
 
 Halleluah halleluah
 
@@ -24,12 +25,14 @@ Halleluah halleluah
 Halleluah halleluah`
     },
     {
+        number: 2,
         title: "మహిమ ఘనత",
-        lyrics: "మహిమ ఘనత నీకే చెల్లును దేవా...\n(Lyrics will be added later)"
+        lyrics: "మహిమ ఘనత నీకే చెల్లును దేవా...\n(Lyrics will be updated soon)"
     },
     {
+        number: 3,
         title: "యేసయ్యా నీవే",
-        lyrics: "యేసయ్యా నీవే నా ఆశ్రయము...\n(Lyrics will be added later)"
+        lyrics: "యేసయ్యా నీవే నా ఆశ్రయము...\n(Lyrics will be updated soon)"
     }
 ];
 
@@ -37,7 +40,10 @@ const list = document.getElementById("song-list");
 const lyricsBox = document.getElementById("lyrics-box");
 const searchInput = document.getElementById("search");
 
-// Render songs list
+// Default font size in pixels
+let currentFontSize = 21; 
+
+// Render song list
 function renderSongs(songsToDisplay) {
     list.innerHTML = "";
 
@@ -61,16 +67,44 @@ function renderSongs(songsToDisplay) {
     });
 }
 
-// Show lyrics above the footer
+// Show lyrics with Font Controls
 function showLyrics(song) {
     lyricsBox.style.display = "block";
+    
+    // Reset font size to default when opening a new song
+    currentFontSize = 21; 
+
     lyricsBox.innerHTML = `
-        <button class="close-btn" onclick="closeLyrics()">✕ Close</button>
+        <div class="lyrics-header-controls">
+            <div class="font-controls">
+                <button class="font-btn" onclick="changeFontSize(-2)" title="Decrease font size">A-</button>
+                <span id="font-size-indicator">${currentFontSize}px</span>
+                <button class="font-btn" onclick="changeFontSize(2)" title="Increase font size">A+</button>
+            </div>
+            <button class="close-btn" onclick="closeLyrics()">✕ Close</button>
+        </div>
         <h2>${song.title}</h2>
         <div class="lyrics-divider">― ✦ ―</div>
-        <pre>${song.lyrics}</pre>
+        <pre id="lyrics-text" style="font-size: ${currentFontSize}px;">${song.lyrics}</pre>
     `;
+    
     lyricsBox.scrollIntoView({ behavior: 'smooth' });
+}
+
+// Change Font Size Function
+function changeFontSize(delta) {
+    const lyricsText = document.getElementById("lyrics-text");
+    const indicator = document.getElementById("font-size-indicator");
+    
+    // Set limits (min: 15px, max: 35px)
+    if (lyricsText) {
+        let newSize = currentFontSize + delta;
+        if (newSize >= 15 && newSize <= 35) {
+            currentFontSize = newSize;
+            lyricsText.style.fontSize = `${currentFontSize}px`;
+            if (indicator) indicator.textContent = `${currentFontSize}px`;
+        }
+    }
 }
 
 // Hide lyrics

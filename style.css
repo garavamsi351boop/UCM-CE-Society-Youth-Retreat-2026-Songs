@@ -196,24 +196,6 @@ width:160px;
 
 }
 
-.title h3::before,
-.title h3::after{
-
-content:"";
-
-display:inline-block;
-
-width:120px;
-
-height:2px;
-
-background:#d4af37;
-
-vertical-align:middle;
-
-margin:0 15px;
-
-}
 
 /* Mobile */
 

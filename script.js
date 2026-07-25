@@ -27,11 +27,11 @@ Halleluah halleluah
 },
 {
     title: "మహిమ ఘనత",
-    lyrics: 
+    lyrics: `Lyrics will be added later`
 },
 {
     title: "యేసయ్యా నీవే",
-    lyrics: 
+    lyrics: `Lyrics will be added later`
 }
 ];
 

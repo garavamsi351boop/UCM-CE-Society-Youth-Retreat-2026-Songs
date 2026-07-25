@@ -34,22 +34,43 @@
     </header>
 
     <main class="content">
-        <!-- Enhanced Search Bar -->
+        <!-- Search Bar -->
         <div class="search-container">
             <span class="search-icon">🔍</span>
             <input type="text" id="search" placeholder="Search by song name or number (e.g. 1, #02)...">
         </div>
 
-        <!-- Dynamic Song List -->
+        <!-- Song List -->
         <div id="song-list"></div>
 
-        <!-- Lyrics Container -->
+        <!-- Lyrics Box -->
         <div id="lyrics-box" style="display: none;"></div>
     </main>
 
-    <!-- Floating Back To Top Button -->
-    <button id="backToTop" class="back-to-top" onclick="scrollToTop()">↑</button>
+    <!-- FULL SCREEN PRESENTATION OVERLAY -->
+    <div id="presentation-overlay" class="pres-overlay" style="display: none;">
+        <div class="pres-header">
+            <button class="pres-icon-btn" onclick="exitPresentation()">✕</button>
+        </div>
 
+        <!-- Tapping on this central area displays the next verse -->
+        <div class="pres-slide-body" onclick="nextSlide()">
+            <div id="pres-content" class="pres-content"></div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="pres-footer">
+            <button class="pres-nav-btn" onclick="prevSlide(event)">❮</button>
+            <div class="pres-info">
+                <div id="pres-title" class="pres-song-title"></div>
+                <div id="pres-upnext" class="pres-upnext">Up next: verse 1</div>
+            </div>
+            <span id="pres-counter" class="pres-counter">1 / 1</span>
+            <button class="pres-nav-btn" onclick="nextSlide(event)">❯</button>
+        </div>
+    </div>
+
+    <!-- Transparent Footer -->
     <footer>
         <p>United Church Malkapuram</p>
         <p>Christian Endeavour Society — Youth Retreat 2026</p>

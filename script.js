@@ -3,7 +3,6 @@ const songs = [
         number: 1,
         title: "నిన్నే ఆరాధింతును",
         lyrics: `నిన్నే ఆరాధింతును(4)
-
 మహా మంచివాడు చాలా గొప్పవాడు
 ఎన్ను పోలిన వారెవరు(2)
 
@@ -39,64 +38,80 @@ Halleluah halleluah`
 const list = document.getElementById("song-list");
 const lyricsBox = document.getElementById("lyrics-box");
 const searchInput = document.getElementById("search");
+const backToTopBtn = document.getElementById("backToTop");
 
-// Default font size in pixels
-let currentFontSize = 21; 
+let currentFontSize = 21;
 
-// Render song list
+// Helper to format single digits into 2-digit strings (e.g. 1 -> "01")
+function formatSongNumber(num) {
+    return num < 10 ? `0${num}` : `${num}`;
+}
+
+// Render Songs List
 function renderSongs(songsToDisplay) {
     list.innerHTML = "";
 
     if (songsToDisplay.length === 0) {
-        list.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.7); font-size: 18px; margin-top: 20px;">No songs found</p>`;
+        list.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.7); font-size: 18px; margin-top: 25px;">No songs found</p>`;
         return;
     }
 
     songsToDisplay.forEach(song => {
         const div = document.createElement("div");
-        div.className = "song";
+        div.className = "song ripple";
         div.innerHTML = `
-            <span class="song-title">
-                <span class="music-icon">🎵</span> ${song.title}
-            </span>
+            <div class="song-left">
+                <span class="song-badge">#${formatSongNumber(song.number)}</span>
+                <span class="song-title">${song.title}</span>
+            </div>
             <span class="song-arrow">❯</span>
         `;
 
-        div.onclick = () => showLyrics(song);
+        div.onclick = (e) => {
+            createRipple(e, div);
+            showLyrics(song);
+        };
         list.appendChild(div);
     });
 }
 
-// Show lyrics with Font Controls
+// Show Lyrics Card
 function showLyrics(song) {
     lyricsBox.style.display = "block";
-    
-    // Reset font size to default when opening a new song
-    currentFontSize = 21; 
+    currentFontSize = 21;
 
     lyricsBox.innerHTML = `
         <div class="lyrics-header-controls">
             <div class="font-controls">
-                <button class="font-btn" onclick="changeFontSize(-2)" title="Decrease font size">A-</button>
+                <button class="font-btn" onclick="changeFontSize(-2)">A-</button>
                 <span id="font-size-indicator">${currentFontSize}px</span>
-                <button class="font-btn" onclick="changeFontSize(2)" title="Increase font size">A+</button>
+                <button class="font-btn" onclick="changeFontSize(2)">A+</button>
             </div>
-            <button class="close-btn" onclick="closeLyrics()">✕ Close</button>
+            
+            <div class="action-buttons">
+                <button class="action-btn copy-btn" onclick="copyLyrics('${song.title}')">📋 Copy</button>
+                <button class="action-btn share-btn" onclick="shareWhatsApp('${song.title}')">💬 Share</button>
+                <button class="close-btn" onclick="closeLyrics()">✕</button>
+            </div>
         </div>
-        <h2>${song.title}</h2>
+
+        <div class="lyrics-title-wrapper">
+            <span class="lyrics-song-badge">Song #${formatSongNumber(song.number)}</span>
+            <h2>${song.title}</h2>
+        </div>
+        
         <div class="lyrics-divider">― ✦ ―</div>
         <pre id="lyrics-text" style="font-size: ${currentFontSize}px;">${song.lyrics}</pre>
     `;
-    
+
     lyricsBox.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Change Font Size Function
+// Font Size Controls
 function changeFontSize(delta) {
     const lyricsText = document.getElementById("lyrics-text");
     const indicator = document.getElementById("font-size-indicator");
     
-    // Set limits (min: 15px, max: 35px)
     if (lyricsText) {
         let newSize = currentFontSize + delta;
         if (newSize >= 15 && newSize <= 35) {
@@ -107,20 +122,77 @@ function changeFontSize(delta) {
     }
 }
 
-// Hide lyrics
+// Copy Lyrics Function
+function copyLyrics(title) {
+    const song = songs.find(s => s.title === title);
+    if (!song) return;
+
+    const textToCopy = `✝ ${song.title} (#${formatSongNumber(song.number)})\n\n${song.lyrics}\n\n— UCM CE Society Youth Retreat 2026`;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+        alert("Lyrics copied to clipboard!");
+    });
+}
+
+// Share via WhatsApp Function
+function shareWhatsApp(title) {
+    const song = songs.find(s => s.title === title);
+    if (!song) return;
+
+    const shareText = `*${song.title}* (#${formatSongNumber(song.number)})\n\n${song.lyrics}\n\n_UCM CE Society Youth Retreat 2026_`;
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+    window.open(whatsappUrl, '_blank');
+}
+
+// Close Lyrics Box
 function closeLyrics() {
     lyricsBox.style.display = "none";
 }
 
-// Search filter
+// Search Logic (Handles Song Numbers & Titles)
 searchInput.addEventListener("input", (e) => {
-    const query = e.target.value.toLowerCase().trim();
+    const query = e.target.value.toLowerCase().trim().replace('#', '');
+    
     const filtered = songs.filter(song =>
         song.title.toLowerCase().includes(query) ||
-        song.lyrics.toLowerCase().includes(query)
+        song.lyrics.toLowerCase().includes(query) ||
+        song.number.toString() === query ||
+        formatSongNumber(song.number) === query
     );
     renderSongs(filtered);
 });
+
+// Interactive Ripple Effect
+function createRipple(event, element) {
+    const circle = document.createElement("span");
+    const diameter = Math.max(element.clientWidth, element.clientHeight);
+    const radius = diameter / 2;
+
+    const rect = element.getBoundingClientRect();
+    circle.style.width = circle.style.height = `${diameter}px`;
+    circle.style.left = `${event.clientX - rect.left - radius}px`;
+    circle.style.top = `${event.clientY - rect.top - radius}px`;
+    circle.classList.add("ripple-effect");
+
+    const ripple = element.getElementsByClassName("ripple-effect")[0];
+    if (ripple) {
+        ripple.remove();
+    }
+
+    element.appendChild(circle);
+}
+
+// Back to Top Scroll Logic
+window.onscroll = function () {
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        backToTopBtn.style.display = "flex";
+    } else {
+        backToTopBtn.style.display = "none";
+    }
+};
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 // Initial Render
 renderSongs(songs);

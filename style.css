@@ -369,6 +369,58 @@ pre{
 
 /* ================= MOBILE ================= */
 
+/* ================= CONTENT ================= */
+
+.content{
+
+    max-width:900px;
+
+    margin:0 auto;
+
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+
+    max-width:900px;
+
+    margin:70px auto 20px;
+
+    text-align:center;
+
+    color:white;
+
+    padding:25px;
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(12px);
+
+    border-radius:18px;
+
+    border:1px solid rgba(255,255,255,.12);
+
+}
+
+footer p{
+
+    margin:6px 0;
+
+    font-size:18px;
+
+}
+
+footer small{
+
+    display:block;
+
+    margin-top:15px;
+
+    color:rgba(255,255,255,.75);
+
+}
+
 @media(max-width:768px){
 
 body{

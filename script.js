@@ -97,7 +97,7 @@ function showLyrics(song) {
             </div>
             
             <div class="action-buttons">
-                <button class="action-btn present-btn" onclick="startPresentation()">🖥️ Present Mode</button>
+                <button class="action-btn present-btn" onclick="startPresentation()" title="Present Mode">🖥️</button>
                 <button class="close-btn" onclick="closeLyrics()">✕</button>
             </div>
         </div>

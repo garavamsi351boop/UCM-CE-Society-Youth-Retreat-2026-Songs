@@ -1,78 +1,83 @@
 <!DOCTYPE html>
-<html lang="te">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UCM Digital Songbook</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <header>
-        <p class="tagline">UNION OF CHRISTIAN MOVEMENT</p>
+        <p class="tagline">W e &nbsp; P r e a c h &nbsp; J e s u s &nbsp; T h e &nbsp; L i v i n g &nbsp; S a v i o u r</p>
+
         <div class="hero">
-            <img src="https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=400&auto=format&fit=crop" alt="CE Logo" class="logo">
-            
-            <div class="hero-text">
-                <h1>UCM</h1>
-                <h2>CE Society</h2>
-                <div class="gold-divider"></div>
-                <h3 class="gold-heading">YOUTH RETREAT 2026</h3>
-                <div class="gold-divider small"></div>
-                <h4>SONGS</h4>
+            <div class="logo-wrapper">
+                <img src="ChurchPNG.png" class="logo left-logo" alt="Church Logo">
             </div>
 
-            <img src="https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=400&auto=format&fit=crop" alt="Cross Logo" class="logo">
+            <div class="hero-text">
+                <h1>UNITED CHURCH</h1>
+                <h2>Malkapuram</h2>
+                <div class="gold-divider"></div>
+                <h3 class="gold-heading">Christian Endeavour Society</h3>
+                <div class="gold-divider small"></div>
+                <h4>Youth Retreat 2026</h4>
+            </div>
+
+            <div class="logo-wrapper">
+                <img src="ce-logo.png" class="logo right-logo" alt="CE Logo">
+            </div>
         </div>
     </header>
 
     <main class="content">
+        <!-- Search Bar -->
         <div class="search-container">
-            <input type="text" id="search" placeholder="Search song title, lyrics, or #number...">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search" placeholder="Search by song name or number (e.g. 1, #02)...">
         </div>
 
-        <div id="song-list">
-            <!-- Dynamic Song List -->
-        </div>
+        <!-- Song List -->
+        <div id="song-list"></div>
 
-        <div id="lyrics-box" style="display: none;">
-            <!-- Dynamic Lyrics View -->
-        </div>
+        <!-- Lyrics Box -->
+        <div id="lyrics-box" style="display: none;"></div>
     </main>
 
-    <!-- PRESENTATION OVERLAY -->
+    <!-- FULL SCREEN PRESENTATION OVERLAY -->
     <div id="presentation-overlay" class="pres-overlay" style="display: none;">
         <div class="pres-header">
-            <div class="pres-controls">
-                <button id="pres-eye-btn" class="pres-icon-btn" onclick="toggleTransliteration()" title="Toggle Transliteration">👁️</button>
-                <button id="pres-play-btn" class="pres-icon-btn" onclick="togglePlayPause()" title="Pause (Blank Screen)">⏸️</button>
-                <button id="pres-fullscreen-btn" class="pres-icon-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
-            </div>
-            <button class="pres-icon-btn close-pres-btn" onclick="exitPresentation()" title="Close Presentation">✕</button>
+            <button class="pres-icon-btn" onclick="exitPresentation()">✕</button>
         </div>
 
-        <div class="pres-slide-body" onclick="nextSlide(event)">
-            <div id="pres-content" class="pres-content slide-fade-in">
-                <!-- Slide Lyrics -->
-            </div>
+        <!-- Tapping on this central area displays the next verse -->
+        <div class="pres-slide-body" onclick="nextSlide()">
+            <div id="pres-content" class="pres-content"></div>
         </div>
 
+        <!-- Bottom Controls -->
         <div class="pres-footer">
             <button class="pres-nav-btn" onclick="prevSlide(event)">❮</button>
             <div class="pres-info">
-                <div id="pres-title" class="pres-song-title">Song Title</div>
-                <div id="pres-upnext" class="pres-upnext">Up next: verse 2</div>
+                <div id="pres-title" class="pres-song-title"></div>
+                <div id="pres-upnext" class="pres-upnext">Up next: verse 1</div>
             </div>
             <span id="pres-counter" class="pres-counter">1 / 1</span>
             <button class="pres-nav-btn" onclick="nextSlide(event)">❯</button>
         </div>
     </div>
 
+    <!-- Transparent Footer -->
     <footer>
-        <p>UCM CE Society Youth Retreat 2026</p>
-        <small>Sing with Joy & Praise</small>
+        <p>United Church Malkapuram</p>
+        <p>Christian Endeavour Society — Youth Retreat 2026</p>
+        <small>Made with ❤️ for God's Glory</small>
     </footer>
 
     <script src="script.js"></script>
 </body>
+
 </html>

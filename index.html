@@ -9,51 +9,43 @@
 <body>
 
     <header>
-        <p class="tagline">Union of Christian Movement</p>
+        <p class="tagline">UNION OF CHRISTIAN MOVEMENT</p>
         <div class="hero">
-            <div class="logo-wrapper">
-                <img src="https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=400&auto=format&fit=crop" alt="CE Logo" class="logo">
-            </div>
+            <img src="https://images.unsplash.com/photo-1544427920-c49ccfb85579?q=80&w=400&auto=format&fit=crop" alt="CE Logo" class="logo">
+            
             <div class="hero-text">
                 <h1>UCM</h1>
                 <h2>CE Society</h2>
                 <div class="gold-divider"></div>
-                <h3 class="gold-heading">Youth Retreat 2026</h3>
+                <h3 class="gold-heading">YOUTH RETREAT 2026</h3>
                 <div class="gold-divider small"></div>
                 <h4>SONGS</h4>
             </div>
-            <div class="logo-wrapper">
-                <img src="https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=400&auto=format&fit=crop" alt="Cross Logo" class="logo">
-            </div>
+
+            <img src="https://images.unsplash.com/photo-1519817650390-64a93db51149?q=80&w=400&auto=format&fit=crop" alt="Cross Logo" class="logo">
         </div>
     </header>
 
     <main class="content">
         <div class="search-container">
-            <span class="search-icon">🔍</span>
             <input type="text" id="search" placeholder="Search song title, lyrics, or #number...">
         </div>
 
         <div id="song-list">
-            <!-- Dynamic Song List Renders Here -->
+            <!-- Dynamic Song List -->
         </div>
 
         <div id="lyrics-box" style="display: none;">
-            <!-- Dynamic Lyrics View Renders Here -->
+            <!-- Dynamic Lyrics View -->
         </div>
     </main>
 
-    <!-- FULLSCREEN PRESENTATION OVERLAY -->
+    <!-- PRESENTATION OVERLAY -->
     <div id="presentation-overlay" class="pres-overlay" style="display: none;">
         <div class="pres-header">
             <div class="pres-controls">
-                <!-- Eye Icon: Toggle English Transliteration -->
                 <button id="pres-eye-btn" class="pres-icon-btn" onclick="toggleTransliteration()" title="Toggle Transliteration">👁️</button>
-                
-                <!-- Play/Pause Icon: Blank Screen Toggle -->
                 <button id="pres-play-btn" class="pres-icon-btn" onclick="togglePlayPause()" title="Pause (Blank Screen)">⏸️</button>
-                
-                <!-- Fullscreen Toggle Icon -->
                 <button id="pres-fullscreen-btn" class="pres-icon-btn" onclick="toggleFullscreen()" title="Toggle Fullscreen">⛶</button>
             </div>
             <button class="pres-icon-btn close-pres-btn" onclick="exitPresentation()" title="Close Presentation">✕</button>
@@ -61,7 +53,7 @@
 
         <div class="pres-slide-body" onclick="nextSlide(event)">
             <div id="pres-content" class="pres-content slide-fade-in">
-                <!-- Slide Lyrics Render Here -->
+                <!-- Slide Lyrics -->
             </div>
         </div>
 

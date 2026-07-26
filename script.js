@@ -228,17 +228,41 @@ function exitPresentation() {
 
 function updateSlide() {
     const presContent = document.getElementById("pres-content");
-    
+    if (!presContent) return;
+
+    // Handle Paused / Black Screen state
     if (!isPresentationPlaying) {
-        presContent.style.opacity = "0";
+        presOverlay.classList.add("pres-paused");
         return;
+    } else {
+        presOverlay.classList.remove("pres-paused");
     }
 
-    presContent.style.opacity = "1";
     const totalSlides = presentationSlides.length;
     const currentVerseText = presentationSlides[currentSlideIndex];
     const transliteratedText = transliterateTelugu(currentVerseText);
 
+    presContent.classList.remove("slide-fade-in");
+    void presContent.offsetWidth; 
+    presContent.classList.add("slide-fade-in");
+
+    let contentHTML = `<div class="pres-telugu">${currentVerseText}</div>`;
+    if (showEnglishTransliteration) {
+        contentHTML += `<div class="pres-english-trans">${transliteratedText}</div>`;
+    }
+
+    presContent.innerHTML = contentHTML;
+
+    document.getElementById("pres-title").textContent = currentSong.title;
+    document.getElementById("pres-counter").textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
+
+    const upNextElem = document.getElementById("pres-upnext");
+    if (currentSlideIndex < totalSlides - 1) {
+        upNextElem.textContent = `Up next: verse ${currentSlideIndex + 2}`;
+    } else {
+        upNextElem.textContent = "End of Song";
+    }
+}
     // Fade animation trigger
     presContent.classList.remove("slide-fade-in");
     void presContent.offsetWidth; 
@@ -273,16 +297,16 @@ function toggleFullscreen() {
 }
 
 // 2. PLAY / PAUSE (BLANK SCREEN TOGGLE)
-function togglePlayPause() {
+function togglePlayPause(e) {
+    if (e) e.stopPropagation(); // Prevents clicking the play button from triggering next slide!
     isPresentationPlaying = !isPresentationPlaying;
+    
     const playBtn = document.getElementById("pres-play-btn");
 
     if (isPresentationPlaying) {
         playBtn.textContent = "⏸️";
-        playBtn.title = "Pause/Blank Screen";
     } else {
         playBtn.textContent = "▶️";
-        playBtn.title = "Play Presentation";
     }
 
     updateSlide();
@@ -306,7 +330,7 @@ function toggleTransliteration() {
 
 function nextSlide(e) {
     if (e) e.stopPropagation();
-    if (!isPresentationPlaying) return;
+    if (!isPresentationPlaying) return; // Disables clicking forward when paused
     if (currentSlideIndex < presentationSlides.length - 1) {
         currentSlideIndex++;
         updateSlide();

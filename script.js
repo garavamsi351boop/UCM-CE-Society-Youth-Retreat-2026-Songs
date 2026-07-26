@@ -3,7 +3,6 @@ const songs = [
         number: 1,
         title: "నిన్నే ఆరాధింతును",
         lyrics: `నిన్నే ఆరాధింతును(4)
-
 మహా మంచివాడు చాలా గొప్పవాడు
 నిన్ను పోలిన వారెవరు(2)
 
@@ -295,10 +294,10 @@ function toggleTransliteration() {
     const eyeBtn = document.getElementById("pres-eye-btn");
 
     if (showEnglishTransliteration) {
-        eyeBtn.textContent = "👁️";
+       eyeBtn.textContent = "◉";   // or "⊙"
         eyeBtn.title = "Hide English Transliteration";
     } else {
-        eyeBtn.textContent = "🙈"; // Eye closed / disabled state
+      eyeBtn.textContent = "⊘";   // or "⊖"
         eyeBtn.title = "Show English Transliteration";
     }
 

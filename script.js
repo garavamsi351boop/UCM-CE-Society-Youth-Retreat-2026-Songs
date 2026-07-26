@@ -211,13 +211,7 @@ function startPresentation() {
     currentSlideIndex = 0;
     isPresentationPlaying = true;
     
-    // Reset buttons state
-    const playBtn = document.getElementById("pres-play-btn");
-    if (playBtn) playBtn.textContent = "⏸️";
-
-    presOverlay.style.display = "flex";
-    updateSlide();
-}
+   
 
 function exitPresentation() {
     if (document.fullscreenElement) {
@@ -272,21 +266,7 @@ function toggleFullscreen() {
     }
 }
 
-// 2. PLAY / PAUSE (BLANK SCREEN TOGGLE)
-function togglePlayPause() {
-    isPresentationPlaying = !isPresentationPlaying;
-    const playBtn = document.getElementById("pres-play-btn");
 
-    if (isPresentationPlaying) {
-        playBtn.textContent = "⏸️";
-        playBtn.title = "Pause/Blank Screen";
-    } else {
-        playBtn.textContent = "▶️";
-        playBtn.title = "Play Presentation";
-    }
-
-    updateSlide();
-}
 
 // 3. EYE ICON (TRANSLITERATION TOGGLE)
 function toggleTransliteration() {

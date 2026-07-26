@@ -3,6 +3,7 @@ const songs = [
         number: 1,
         title: "నిన్నే ఆరాధింతును",
         lyrics: `నిన్నే ఆరాధింతును(4)
+
 మహా మంచివాడు చాలా గొప్పవాడు
 నిన్ను పోలిన వారెవరు(2)
 
@@ -53,7 +54,78 @@ let presentationSlides = [];
 let currentSlideIndex = 0;
 let currentFontSize = 21;
 
-// Helper to format song numbers (e.g. 1 -> "01")
+// Telugu to Roman Phonetic Transliteration Engine
+function transliterateTelugu(text) {
+    if (!text) return "";
+
+    const vowels = {
+        'అ': 'a', 'ఆ': 'aa', 'ఇ': 'i', 'ఈ': 'ee', 'ఉ': 'u', 'ఊ': 'oo',
+        'ఋ': 'ru', 'ఎ': 'e', 'ఏ': 'ae', 'ఐ': 'ai', 'ఒ': 'o', 'ఓ': 'o', 'ఔ': 'au'
+    };
+
+    const matras = {
+        'ా': 'aa', 'ి': 'i', 'ీ': 'ee', 'ు': 'u', 'ూ': 'oo',
+        'ృ': 'ru', 'ె': 'e', 'ే': 'ae', 'ై': 'ai', 'ొ': 'o', 'ో': 'o', 'ౌ': 'au',
+        'ం': 'm', 'ః': 'h'
+    };
+
+    const consonants = {
+        'క': 'k', 'ఖ': 'kh', 'గ': 'g', 'ఘ': 'gh', 'ఙ': 'ng',
+        'చ': 'ch', 'ఛ': 'chh', 'జ': 'j', 'ఝ': 'jh', 'ఞ': 'ny',
+        'ట': 't', 'ఠ': 'th', 'డ': 'd', 'ఢ': 'dh', 'ణ': 'n',
+        'త': 'th', 'థ': 'th', 'ద': 'd', 'ధ': 'dh', 'న': 'n',
+        'ప': 'p', 'ఫ': 'f', 'బ': 'b', 'భ': 'bh', 'మ': 'm',
+        'య': 'y', 'ర': 'r', 'ల': 'l', 'వ': 'v', 'శ': 'sh',
+        'ష': 'sh', 'స': 's', 'హ': 'h', 'ళ': 'l', 'క్ష': 'ksh', 'ఱ': 'r'
+    };
+
+    let result = "";
+    let i = 0;
+
+    while (i < text.length) {
+        let char = text[i];
+        let nextChar = text[i + 1] || "";
+
+        // Preserve numbers, brackets, English text
+        if (/^[a-zA-Z0-9\s\(\)\.,\-\n]+$/.test(char)) {
+            result += char;
+            i++;
+            continue;
+        }
+
+        if (vowels[char]) {
+            result += vowels[char];
+            i++;
+        } else if (consonants[char]) {
+            let base = consonants[char];
+            // Check virama (halant)
+            if (nextChar === '్') {
+                result += base;
+                i += 2;
+            } else if (matras[nextChar]) {
+                result += base + matras[nextChar];
+                i += 2;
+            } else {
+                result += base + 'a';
+                i++;
+            }
+        } else if (matras[char]) {
+            result += matras[char];
+            i++;
+        } else {
+            result += char;
+            i++;
+        }
+    }
+
+    // Capitalize line starts
+    return result.split('\n').map(line => {
+        let trimmed = line.trim();
+        return trimmed ? trimmed.charAt(0).toUpperCase() + trimmed.slice(1) : "";
+    }).join('\n');
+}
+
+// Format Song Numbers
 function formatSongNumber(num) {
     return num < 10 ? `0${num}` : `${num}`;
 }
@@ -135,7 +207,6 @@ function closeLyrics() {
 function startPresentation() {
     if (!currentSong) return;
 
-    // Splits lyrics by blank lines into individual verse slides
     presentationSlides = currentSong.lyrics
         .split(/\n\s*\n/)
         .map(slide => slide.trim())
@@ -153,9 +224,19 @@ function exitPresentation() {
 function updateSlide() {
     const totalSlides = presentationSlides.length;
     const currentVerseText = presentationSlides[currentSlideIndex];
+    const transliteratedText = transliterateTelugu(currentVerseText);
 
-    document.getElementById("pres-content").innerHTML = `
+    const presContent = document.getElementById("pres-content");
+    
+    // Trigger Fade Animation
+    presContent.classList.remove("slide-fade-in");
+    void presContent.offsetWidth; // Reflow trigger
+    presContent.classList.add("slide-fade-in");
+
+    // Render Telugu & Gold Transliteration
+    presContent.innerHTML = `
         <div class="pres-telugu">${currentVerseText}</div>
+        <div class="pres-english-trans">${transliteratedText}</div>
     `;
 
     document.getElementById("pres-title").textContent = currentSong.title;
@@ -185,7 +266,7 @@ function prevSlide(e) {
     }
 }
 
-// Keyboard controls
+// Keyboard Controls
 document.addEventListener('keydown', (e) => {
     if (presOverlay.style.display === "flex") {
         if (e.key === "ArrowRight" || e.key === " ") nextSlide();

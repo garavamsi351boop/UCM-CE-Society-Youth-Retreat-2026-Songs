@@ -211,14 +211,13 @@ function startPresentation() {
     currentSlideIndex = 0;
     isPresentationPlaying = true;
     
-   // Reset buttons state
+    // Reset buttons state
     const playBtn = document.getElementById("pres-play-btn");
     if (playBtn) playBtn.textContent = "⏸️";
 
     presOverlay.style.display = "flex";
     updateSlide();
 }
-
 
 function exitPresentation() {
     if (document.fullscreenElement) {
@@ -264,7 +263,14 @@ function updateSlide() {
     }
 }
 
-
+// 1. FULLSCREEN TOGGLE
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        presOverlay.requestFullscreen().catch(err => console.log(err));
+    } else {
+        document.exitFullscreen();
+    }
+}
 
 // 2. PLAY / PAUSE (BLANK SCREEN TOGGLE)
 function togglePlayPause() {
@@ -279,17 +285,8 @@ function togglePlayPause() {
         playBtn.title = "Play Presentation";
     }
 
-    updateSlide
-// 1. FULLSCREEN TOGGLE
-function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-        presOverlay.requestFullscreen().catch(err => console.log(err));
-    } else {
-        document.exitFullscreen();
-    }
+    updateSlide();
 }
-
-
 
 // 3. EYE ICON (TRANSLITERATION TOGGLE)
 function toggleTransliteration() {

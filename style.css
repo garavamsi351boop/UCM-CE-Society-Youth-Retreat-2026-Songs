@@ -600,15 +600,7 @@ footer small {
     }
 }
 
-/* Black Screen Mode when Paused */
-.pres-overlay.pres-paused .pres-slide-body,
-.pres-overlay.pres-paused .pres-footer {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transition: opacity 0.2s ease;
-}
 
-/* Keeps top control icons visible while paused so you can resume */
 .pres-overlay.pres-paused .pres-header {
     opacity: 1 !important;
     z-index: 10000;

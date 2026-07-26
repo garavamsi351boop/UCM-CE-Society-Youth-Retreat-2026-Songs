@@ -53,31 +53,29 @@ let presentationSlides = [];
 let currentSlideIndex = 0;
 let currentFontSize = 21;
 
-let showEnglishTransliteration = true;
-let isPresentationPlaying = true;
-
+// Telugu to Roman Phonetic Transliteration Engine
 function transliterateTelugu(text) {
     if (!text) return "";
 
     const vowels = {
         'అ': 'a', 'ఆ': 'aa', 'ఇ': 'i', 'ఈ': 'ee', 'ఉ': 'u', 'ఊ': 'oo',
-        'ఎ': 'e', 'ఏ': 'ae', 'ఐ': 'ai', 'ఒ': 'o', 'ఓ': 'o', 'ఔ': 'au'
+        'ఋ': 'ru', 'ఎ': 'e', 'ఏ': 'ae', 'ఐ': 'ai', 'ఒ': 'o', 'ఓ': 'o', 'ఔ': 'au'
     };
 
     const matras = {
         'ా': 'aa', 'ి': 'i', 'ీ': 'ee', 'ు': 'u', 'ూ': 'oo',
-        'ె': 'e', 'ే': 'ae', 'ై': 'ai', 'ొ': 'o', 'ో': 'o', 'ౌ': 'au',
+        'ృ': 'ru', 'ె': 'e', 'ే': 'ae', 'ై': 'ai', 'ొ': 'o', 'ో': 'o', 'ౌ': 'au',
         'ం': 'm', 'ః': 'h'
     };
 
     const consonants = {
-        'క': 'k', 'ఖ': 'kh', 'గ': 'g', 'ఘ': 'gh',
-        'చ': 'ch', 'ఛ': 'chh', 'జ': 'j', 'ఝ': 'jh',
+        'క': 'k', 'ఖ': 'kh', 'గ': 'g', 'ఘ': 'gh', 'ఙ': 'ng',
+        'చ': 'ch', 'ఛ': 'chh', 'జ': 'j', 'ఝ': 'jh', 'ఞ': 'ny',
         'ట': 't', 'ఠ': 'th', 'డ': 'd', 'ఢ': 'dh', 'ణ': 'n',
         'త': 'th', 'థ': 'th', 'ద': 'd', 'ధ': 'dh', 'న': 'n',
         'ప': 'p', 'ఫ': 'f', 'బ': 'b', 'భ': 'bh', 'మ': 'm',
         'య': 'y', 'ర': 'r', 'ల': 'l', 'వ': 'v', 'శ': 'sh',
-        'ష': 'sh', 'స': 's', 'హ': 'h', 'ళ': 'l'
+        'ష': 'sh', 'స': 's', 'హ': 'h', 'ళ': 'l', 'క్ష': 'ksh', 'ఱ': 'r'
     };
 
     let result = "";
@@ -87,6 +85,7 @@ function transliterateTelugu(text) {
         let char = text[i];
         let nextChar = text[i + 1] || "";
 
+        // Preserve numbers, brackets, English text
         if (/^[a-zA-Z0-9\s\(\)\.,\-\n]+$/.test(char)) {
             result += char;
             i++;
@@ -98,6 +97,7 @@ function transliterateTelugu(text) {
             i++;
         } else if (consonants[char]) {
             let base = consonants[char];
+            // Check virama (halant)
             if (nextChar === '్') {
                 result += base;
                 i += 2;
@@ -117,20 +117,23 @@ function transliterateTelugu(text) {
         }
     }
 
+    // Capitalize line starts
     return result.split('\n').map(line => {
         let trimmed = line.trim();
         return trimmed ? trimmed.charAt(0).toUpperCase() + trimmed.slice(1) : "";
     }).join('\n');
 }
 
+// Format Song Numbers
 function formatSongNumber(num) {
     return num < 10 ? `0${num}` : `${num}`;
 }
 
+// Render Songs List
 function renderSongs(songsToDisplay) {
     list.innerHTML = "";
     if (songsToDisplay.length === 0) {
-        list.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.7); font-size: 16px; margin-top: 20px;">No songs found</p>`;
+        list.innerHTML = `<p style="text-align: center; color: rgba(255,255,255,0.7); font-size: 18px; margin-top: 25px;">No songs found</p>`;
         return;
     }
 
@@ -149,6 +152,7 @@ function renderSongs(songsToDisplay) {
     });
 }
 
+// Show Lyrics Card
 function showLyrics(song) {
     currentSong = song;
     lyricsBox.style.display = "block";
@@ -180,6 +184,7 @@ function showLyrics(song) {
     lyricsBox.scrollIntoView({ behavior: 'smooth' });
 }
 
+// Font Size Controls
 function changeFontSize(delta) {
     const lyricsText = document.getElementById("lyrics-text");
     const indicator = document.getElementById("font-size-indicator");
@@ -197,7 +202,7 @@ function closeLyrics() {
     lyricsBox.style.display = "none";
 }
 
-/* Presentation Functions */
+/* ================= PRESENTATION LOGIC ================= */
 function startPresentation() {
     if (!currentSong) return;
 
@@ -207,45 +212,31 @@ function startPresentation() {
         .filter(slide => slide.length > 0);
 
     currentSlideIndex = 0;
-    isPresentationPlaying = true;
-    
-    const playBtn = document.getElementById("pres-play-btn");
-    if (playBtn) playBtn.textContent = "⏸️";
-
     presOverlay.style.display = "flex";
     updateSlide();
 }
 
 function exitPresentation() {
-    if (document.fullscreenElement) {
-        document.exitFullscreen().catch(() => {});
-    }
     presOverlay.style.display = "none";
 }
 
 function updateSlide() {
-    const presContent = document.getElementById("pres-content");
-    
-    if (!isPresentationPlaying) {
-        presContent.style.opacity = "0";
-        return;
-    }
-
-    presContent.style.opacity = "1";
     const totalSlides = presentationSlides.length;
     const currentVerseText = presentationSlides[currentSlideIndex];
     const transliteratedText = transliterateTelugu(currentVerseText);
 
+    const presContent = document.getElementById("pres-content");
+    
+    // Trigger Fade Animation
     presContent.classList.remove("slide-fade-in");
-    void presContent.offsetWidth; 
+    void presContent.offsetWidth; // Reflow trigger
     presContent.classList.add("slide-fade-in");
 
-    let contentHTML = `<div class="pres-telugu">${currentVerseText}</div>`;
-    if (showEnglishTransliteration) {
-        contentHTML += `<div class="pres-english-trans">${transliteratedText}</div>`;
-    }
-
-    presContent.innerHTML = contentHTML;
+    // Render Telugu & Gold Transliteration
+    presContent.innerHTML = `
+        <div class="pres-telugu">${currentVerseText}</div>
+        <div class="pres-english-trans">${transliteratedText}</div>
+    `;
 
     document.getElementById("pres-title").textContent = currentSong.title;
     document.getElementById("pres-counter").textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
@@ -258,43 +249,8 @@ function updateSlide() {
     }
 }
 
-function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-        presOverlay.requestFullscreen().catch(err => console.log(err));
-    } else {
-        document.exitFullscreen();
-    }
-}
-
-function togglePlayPause() {
-    isPresentationPlaying = !isPresentationPlaying;
-    const playBtn = document.getElementById("pres-play-btn");
-
-    if (isPresentationPlaying) {
-        playBtn.textContent = "⏸️";
-    } else {
-        playBtn.textContent = "▶️";
-    }
-
-    updateSlide();
-}
-
-function toggleTransliteration() {
-    showEnglishTransliteration = !showEnglishTransliteration;
-    const eyeBtn = document.getElementById("pres-eye-btn");
-
-    if (showEnglishTransliteration) {
-        eyeBtn.textContent = "👁️";
-    } else {
-        eyeBtn.textContent = "🙈"; 
-    }
-
-    updateSlide();
-}
-
 function nextSlide(e) {
     if (e) e.stopPropagation();
-    if (!isPresentationPlaying) return;
     if (currentSlideIndex < presentationSlides.length - 1) {
         currentSlideIndex++;
         updateSlide();
@@ -303,23 +259,22 @@ function nextSlide(e) {
 
 function prevSlide(e) {
     if (e) e.stopPropagation();
-    if (!isPresentationPlaying) return;
     if (currentSlideIndex > 0) {
         currentSlideIndex--;
         updateSlide();
     }
 }
 
+// Keyboard Controls
 document.addEventListener('keydown', (e) => {
     if (presOverlay.style.display === "flex") {
         if (e.key === "ArrowRight" || e.key === " ") nextSlide();
         if (e.key === "ArrowLeft") prevSlide();
-        if (e.key === "b" || e.key === "B") togglePlayPause();
-        if (e.key === "f" || e.key === "F") toggleFullscreen();
-        if (e.key === "Escape" && !document.fullscreenElement) exitPresentation();
+        if (e.key === "Escape") exitPresentation();
     }
 });
 
+// Search Filter
 searchInput.addEventListener("input", (e) => {
     const query = e.target.value.toLowerCase().trim().replace('#', '');
     const filtered = songs.filter(song =>
@@ -331,4 +286,5 @@ searchInput.addEventListener("input", (e) => {
     renderSongs(filtered);
 });
 
+// Initial Render
 renderSongs(songs);

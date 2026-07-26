@@ -3,6 +3,7 @@ const songs = [
         number: 1,
         title: "నిన్నే ఆరాధింతును",
         lyrics: `నిన్నే ఆరాధింతును(4)
+
 మహా మంచివాడు చాలా గొప్పవాడు
 నిన్ను పోలిన వారెవరు(2)
 
@@ -53,7 +54,11 @@ let presentationSlides = [];
 let currentSlideIndex = 0;
 let currentFontSize = 21;
 
-// Telugu to Roman Phonetic Transliteration Engine
+// Control States
+let showEnglishTransliteration = true;
+let isPresentationPlaying = true;
+
+// Telugu to Roman Transliteration Engine
 function transliterateTelugu(text) {
     if (!text) return "";
 
@@ -85,7 +90,6 @@ function transliterateTelugu(text) {
         let char = text[i];
         let nextChar = text[i + 1] || "";
 
-        // Preserve numbers, brackets, English text
         if (/^[a-zA-Z0-9\s\(\)\.,\-\n]+$/.test(char)) {
             result += char;
             i++;
@@ -97,7 +101,6 @@ function transliterateTelugu(text) {
             i++;
         } else if (consonants[char]) {
             let base = consonants[char];
-            // Check virama (halant)
             if (nextChar === '్') {
                 result += base;
                 i += 2;
@@ -117,19 +120,16 @@ function transliterateTelugu(text) {
         }
     }
 
-    // Capitalize line starts
     return result.split('\n').map(line => {
         let trimmed = line.trim();
         return trimmed ? trimmed.charAt(0).toUpperCase() + trimmed.slice(1) : "";
     }).join('\n');
 }
 
-// Format Song Numbers
 function formatSongNumber(num) {
     return num < 10 ? `0${num}` : `${num}`;
 }
 
-// Render Songs List
 function renderSongs(songsToDisplay) {
     list.innerHTML = "";
     if (songsToDisplay.length === 0) {
@@ -152,7 +152,6 @@ function renderSongs(songsToDisplay) {
     });
 }
 
-// Show Lyrics Card
 function showLyrics(song) {
     currentSong = song;
     lyricsBox.style.display = "block";
@@ -184,7 +183,6 @@ function showLyrics(song) {
     lyricsBox.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Font Size Controls
 function changeFontSize(delta) {
     const lyricsText = document.getElementById("lyrics-text");
     const indicator = document.getElementById("font-size-indicator");
@@ -202,7 +200,7 @@ function closeLyrics() {
     lyricsBox.style.display = "none";
 }
 
-/* ================= PRESENTATION LOGIC ================= */
+/* ================= PRESENTATION CONTROLS ================= */
 function startPresentation() {
     if (!currentSong) return;
 
@@ -212,31 +210,48 @@ function startPresentation() {
         .filter(slide => slide.length > 0);
 
     currentSlideIndex = 0;
+    isPresentationPlaying = true;
+    
+    // Reset buttons state
+    const playBtn = document.getElementById("pres-play-btn");
+    if (playBtn) playBtn.textContent = "⏸️";
+
     presOverlay.style.display = "flex";
     updateSlide();
 }
 
 function exitPresentation() {
+    if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+    }
     presOverlay.style.display = "none";
 }
 
 function updateSlide() {
+    const presContent = document.getElementById("pres-content");
+    
+    if (!isPresentationPlaying) {
+        presContent.style.opacity = "0";
+        return;
+    }
+
+    presContent.style.opacity = "1";
     const totalSlides = presentationSlides.length;
     const currentVerseText = presentationSlides[currentSlideIndex];
     const transliteratedText = transliterateTelugu(currentVerseText);
 
-    const presContent = document.getElementById("pres-content");
-    
-    // Trigger Fade Animation
+    // Fade animation trigger
     presContent.classList.remove("slide-fade-in");
-    void presContent.offsetWidth; // Reflow trigger
+    void presContent.offsetWidth; 
     presContent.classList.add("slide-fade-in");
 
-    // Render Telugu & Gold Transliteration
-    presContent.innerHTML = `
-        <div class="pres-telugu">${currentVerseText}</div>
-        <div class="pres-english-trans">${transliteratedText}</div>
-    `;
+    let contentHTML = `<div class="pres-telugu">${currentVerseText}</div>`;
+    
+    if (showEnglishTransliteration) {
+        contentHTML += `<div class="pres-english-trans">${transliteratedText}</div>`;
+    }
+
+    presContent.innerHTML = contentHTML;
 
     document.getElementById("pres-title").textContent = currentSong.title;
     document.getElementById("pres-counter").textContent = `${currentSlideIndex + 1} / ${totalSlides}`;
@@ -249,8 +264,50 @@ function updateSlide() {
     }
 }
 
+// 1. FULLSCREEN TOGGLE
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        presOverlay.requestFullscreen().catch(err => console.log(err));
+    } else {
+        document.exitFullscreen();
+    }
+}
+
+// 2. PLAY / PAUSE (BLANK SCREEN TOGGLE)
+function togglePlayPause() {
+    isPresentationPlaying = !isPresentationPlaying;
+    const playBtn = document.getElementById("pres-play-btn");
+
+    if (isPresentationPlaying) {
+        playBtn.textContent = "⏸️";
+        playBtn.title = "Pause/Blank Screen";
+    } else {
+        playBtn.textContent = "▶️";
+        playBtn.title = "Play Presentation";
+    }
+
+    updateSlide();
+}
+
+// 3. EYE ICON (TRANSLITERATION TOGGLE)
+function toggleTransliteration() {
+    showEnglishTransliteration = !showEnglishTransliteration;
+    const eyeBtn = document.getElementById("pres-eye-btn");
+
+    if (showEnglishTransliteration) {
+        eyeBtn.textContent = "👁️";
+        eyeBtn.title = "Hide English Transliteration";
+    } else {
+        eyeBtn.textContent = "🙈"; // Eye closed / disabled state
+        eyeBtn.title = "Show English Transliteration";
+    }
+
+    updateSlide();
+}
+
 function nextSlide(e) {
     if (e) e.stopPropagation();
+    if (!isPresentationPlaying) return;
     if (currentSlideIndex < presentationSlides.length - 1) {
         currentSlideIndex++;
         updateSlide();
@@ -259,18 +316,21 @@ function nextSlide(e) {
 
 function prevSlide(e) {
     if (e) e.stopPropagation();
+    if (!isPresentationPlaying) return;
     if (currentSlideIndex > 0) {
         currentSlideIndex--;
         updateSlide();
     }
 }
 
-// Keyboard Controls
+// Keyboard Hotkeys
 document.addEventListener('keydown', (e) => {
     if (presOverlay.style.display === "flex") {
         if (e.key === "ArrowRight" || e.key === " ") nextSlide();
         if (e.key === "ArrowLeft") prevSlide();
-        if (e.key === "Escape") exitPresentation();
+        if (e.key === "b" || e.key === "B") togglePlayPause(); // 'B' for Blank screen toggle
+        if (e.key === "f" || e.key === "F") toggleFullscreen(); // 'F' for Fullscreen
+        if (e.key === "Escape" && !document.fullscreenElement) exitPresentation();
     }
 });
 
